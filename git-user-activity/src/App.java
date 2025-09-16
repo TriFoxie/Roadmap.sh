@@ -21,6 +21,11 @@ public class App {
             URL gitUrl = new URL("https://api.github.com/users/" + input[0] + "/events");
             java.net.URLConnection connection = gitUrl.openConnection();
             InputStream is = connection.getInputStream();
+            // Add GitHub token if provided as second argument
+            if (input.length > 1 && !input[1].isEmpty()) {
+                connection.setRequestProperty("Authorization", "token " + input[1]);
+                System.out.println("Key used");
+            }
             InputStreamReader reader = new InputStreamReader(is);
             JsonArray events = JsonParser.parseReader(reader).getAsJsonArray();
             reader.close();
@@ -100,6 +105,7 @@ public class App {
             }
         }
         catch (Exception e){
+            System.out.println("[Error] " + e);
             String ex = e.toString().split(" ")[0];
             if ("java.io.FileNotFoundException:".equals(ex)){
                 System.out.println("[Error] User not found.");
